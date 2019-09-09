@@ -1,0 +1,34 @@
+Source-Makefile: package/system/ca-certificates/Makefile
+Package: ca-certificates
+Version: 20161130+nmu1
+Depends: +libc +SSP_SUPPORT:libssp +USE_GLIBC:librt +USE_GLIBC:libpthread 
+Conflicts: 
+Menu-Depends: 
+Provides: 
+Section: base
+Category: Base system
+Title: System CA certificates
+Maintainer: Christian Schoenebeck <christian.schoenebeck@gmail.com>
+Source: ca-certificates_20161130+nmu1.tar.xz
+Type: ipkg
+Description: System CA certificates
+Christian Schoenebeck <christian.schoenebeck@gmail.com>
+@@
+
+Package: ca-bundle
+Version: 20161130+nmu1
+Depends: +libc +SSP_SUPPORT:libssp +USE_GLIBC:librt +USE_GLIBC:libpthread 
+Conflicts: 
+Menu-Depends: 
+Provides: 
+Section: base
+Category: Base system
+Title: System CA certificates as a bundle
+Maintainer: Christian Schoenebeck <christian.schoenebeck@gmail.com>
+Source: ca-certificates_20161130+nmu1.tar.xz
+Type: ipkg
+Description: System CA certificates as a bundle
+Christian Schoenebeck <christian.schoenebeck@gmail.com>
+@@
+
+
