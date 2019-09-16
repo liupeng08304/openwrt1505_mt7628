@@ -12,7 +12,12 @@ ramips_board_detect() {
 
 	machine=$(awk 'BEGIN{FS="[ \t]+:[ \t]"} /machine/ {print $2}' /proc/cpuinfo)
 
+	echo "machine is: $machine"
+
 	case "$machine" in
+	*"Mediatek MT7628AN evaluation board")
+		name="mt7628"
+		;;
 	*"7Links PX-4885")
 		name="px4885"
 		;;

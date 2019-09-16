@@ -1011,7 +1011,7 @@ endef
 # MT7628 Profiles
 #
 
-Image/Build/Profile/MT7628=$(call BuildFirmware/Default4M/$(1),$(1),mt7628,MT7628)
+Image/Build/Profile/MT7628=$(call BuildFirmware/Default16M/$(1),$(1),mt7628,MT7628)
 
 ifeq ($(SUBTARGET),mt7628)
 define Image/Build/Profile/Default
@@ -1024,7 +1024,7 @@ endif
 # MT7688 Profiles
 #
 
-Image/Build/Profile/MT7688=$(call BuildFirmware/Default4M/$(1),$(1),mt7628,MT7628)
+Image/Build/Profile/MT7688=$(call BuildFirmware/Default16M/$(1),$(1),mt7628,MT7628)
 Image/Build/Profile/LinkIt7688=$(call BuildFirmware/Default32M/$(1),$(1),LinkIt7688,LINKIT7688)
 
 ifeq ($(SUBTARGET),mt7628)

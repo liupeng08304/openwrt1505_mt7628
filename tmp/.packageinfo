@@ -18605,6 +18605,25 @@ Imre Kaloz <kaloz@openwrt.org>
 @@
 
 
+Source-Makefile: package/kernel/mydrv/Makefile
+Package: kmod-mydrv
+Submenu: Other modules
+Version: <LINUX_VERSION>-1
+Depends: 
+Conflicts: 
+Menu-Depends: 
+Provides: 
+Section: kernel
+Category: Kernel modules
+Title: mydrv
+Maintainer: 
+Source: 
+Type: ipkg
+Description:   This is a mydrv drivers
+
+@@
+
+
 Source-Makefile: package/kernel/om-watchdog/Makefile
 Package: om-watchdog
 Version: 1-1
@@ -27004,6 +27023,24 @@ Source: mkelfimage_2.7.orig.tar.gz
 Type: ipkg
 Hidden: 1
 Description: mkelfimage
+
+@@
+
+
+Source-Makefile: package/utils/mydrv_app/Makefile
+Package: mydrv_app
+Version: 1
+Depends: +libc +SSP_SUPPORT:libssp +USE_GLIBC:librt +USE_GLIBC:libpthread +libncurses
+Conflicts: 
+Menu-Depends: 
+Provides: 
+Section: utils
+Category: Utilities
+Title: Frame buffer device testing tool
+Maintainer: 
+Source: 
+Type: ipkg
+Description: Frame buffer device testing tool
 
 @@
 
