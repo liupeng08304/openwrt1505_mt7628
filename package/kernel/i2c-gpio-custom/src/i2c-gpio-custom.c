@@ -55,6 +55,13 @@
 
 #define PFX		DRV_NAME ": "
 
+
+volatile unsigned long *GPIOMODE;
+volatile unsigned long *GPIO0_31_DIR;
+volatile unsigned long *GPIO0_31_DATA;
+
+
+
 #define BUS_PARAM_ID		0
 #define BUS_PARAM_SDA		1
 #define BUS_PARAM_SCL		2
@@ -96,7 +103,8 @@ static void i2c_gpio_custom_cleanup(void)
 
 	for (i = 0; i < nr_devices; i++)
 		if (devices[i])
-			platform_device_put(devices[i]);
+			platform_device_unregister(devices[i]);
+			//platform_device_put(devices[i]);
 }
 
 static int __init i2c_gpio_custom_add_one(unsigned int id, unsigned int *params)
@@ -127,6 +135,9 @@ static int __init i2c_gpio_custom_add_one(unsigned int id, unsigned int *params)
 	pdata.sda_is_open_drain = params[BUS_PARAM_SDA_OD] != 0;
 	pdata.scl_is_open_drain = params[BUS_PARAM_SCL_OD] != 0;
 	pdata.scl_is_output_only = params[BUS_PARAM_SCL_OO] != 0;
+	
+	
+	
 
 	err = platform_device_add_data(pdev, &pdata, sizeof(pdata));
 	if (err)
@@ -151,6 +162,13 @@ static int __init i2c_gpio_custom_probe(void)
 
 	printk(KERN_INFO DRV_DESC " version " DRV_VERSION "\n");
 
+	GPIOMODE=(volatile unsigned long *)ioremap(0x10000060,4);
+	GPIO0_31_DIR=(volatile unsigned long *)ioremap(0x10000600,4);
+	GPIO0_31_DATA=(volatile unsigned long *)ioremap(0x10000620,4);
+ 	
+	*GPIOMODE |= (0x1<<20);
+	*GPIO0_31_DIR |= (1<<4)|(1<<5);
+	*GPIO0_31_DATA |= (1<<4)|(1<<5);
 	err = i2c_gpio_custom_add_one(0, bus0);
 	if (err)
 		goto err;

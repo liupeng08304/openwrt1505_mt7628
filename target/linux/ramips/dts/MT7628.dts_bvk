@@ -14,7 +14,7 @@
 	pinctrl {
 		state_default: pinctrl0 {
 			gpio {
-				ralink,group ="i2c",  "jtag";
+				ralink,group = "i2c", "jtag";
 				ralink,function = "gpio";
 			};
 		};
