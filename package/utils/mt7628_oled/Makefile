@@ -2,7 +2,7 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=mtk-mt76x8-oled
+PKG_NAME:=mt7628_oled
 PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
@@ -13,16 +13,16 @@ PKG_KCONFIG:=RALINK_MT7620 RALINK_MT7628
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/kernel.mk
 
-define Package/mtk-mt76x8-oled
+define Package/mt7628_oled
 #  SECTION:=Ralink SDK
 #  CATEGORY:=Ralink SDK
   SECTION:=utils
   CATEGORY:=Utilities
-  TITLE:=mtk-mt76x8-oled
+  TITLE:=mt7628_oled
   DEPENDS:= +libpthread +librt +libstdcpp +kmod-i2c-core +kmod-i2c-ralink 
 endef
 
-define Package/mtk-mt76x8-oled/description
+define Package/mt7628_oled/description
   ssd1306 i2c oled for mt76x8
 endef
 
@@ -46,10 +46,10 @@ endef
 #endef
 
 
-define Package/mtk-mt76x8-oled/install
+define Package/mt7628_oled/install
 	$(INSTALL_DIR) $(1)/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/oled $(1)/bin
 endef
 
 
-$(eval $(call BuildPackage,mtk-mt76x8-oled))
+$(eval $(call BuildPackage,mt7628_oled))

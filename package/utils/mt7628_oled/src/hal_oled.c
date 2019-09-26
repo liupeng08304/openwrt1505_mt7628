@@ -205,6 +205,40 @@ void HalOledDrawPoint(uint8 x,uint8 y,uint8 t)
 	else OLED_GRAM[x][pos]&=~temp;	    
 }
 
+
+
+
+
+void Show_icon(uint16 startx,uint16 starty,uint16 xszie,uint16 ysize,uint8* icon)
+{
+
+
+//列行扫描
+    uint16 l_y,l_num,x0,y0,m,x,data_index=0,bit;
+    l_num=ysize/8;
+    if(ysize%8)
+        l_num++;
+
+    ysize=8*l_num;
+    y0=starty;
+    x0=startx;
+    for(l_y=0; l_y<l_num; l_y++)
+    {
+        for(x=0; x<xszie; x++)
+        {
+            m=icon[data_index++];
+            for(bit=0; bit<8; bit++)
+            {
+                HalOledDrawPoint(x0+x,y0+8*l_y+bit,(m&0x01));
+                m>>=1;
+            }
+        }
+    }
+
+  
+
+}
+
 //x1,y1,x2,y2 填充区域的对角坐标
 //确保x1<=x2;y1<=y2 0<=x1<=127 0<=y1<=63	 	 
 //dot:0,清空;1,填充	  
@@ -323,6 +357,120 @@ void        ss1306SetMirror(uint8 en)
 
 /**************************************************************************************************
 **************************************************************************************************/
+
+/*
+想获取一下目标机运行时linux系统的硬件占用情况，写了这几个小程序，以后直接用了。
+方法就是读取proc下的文件来获取了。 cpu使用率：    /proc/stat ，内存使用情况：      /proc/meminfo
+看程序 ：
+*/
+/***************************************************************
+*    @file:        statusinfo.c
+*
+*    @brief:        从linux系统获取cpu及内存使用情况
+*
+*    @version    1.0
+*
+*    @author        抹黑
+*
+*    @date        2009年3月17日
+*
+***************************************************************/
+typedef struct          //定义一个cpu occupy的结构体
+{
+char name[20];      //定义一个char类型的数组名name有20个元素
+unsigned int user; //定义一个无符号的int类型的user
+unsigned int nice; //定义一个无符号的int类型的nice
+unsigned int system;//定义一个无符号的int类型的system
+unsigned int idle; //定义一个无符号的int类型的idle
+}CPU_OCCUPY;
+
+typedef struct          //定义一个mem occupy的结构体
+{
+char name[20];      //定义一个char类型的数组名name有20个元素
+unsigned long total; 
+char name2[20];
+unsigned long free;                       
+}MEM_OCCUPY;
+
+void get_memoccupy (MEM_OCCUPY *mem) //对无类型get函数含有一个形参结构体类弄的指针O
+{
+    FILE *fd;          
+    int n;             
+    char buff[256];   
+    MEM_OCCUPY *m;
+    m=mem;
+                                                                                                              
+    fd = fopen ("/proc/meminfo", "r"); 
+      
+    fgets (buff, sizeof(buff), fd); 
+    fgets (buff, sizeof(buff), fd); 
+    fgets (buff, sizeof(buff), fd); 
+    fgets (buff, sizeof(buff), fd); 
+    sscanf (buff, "%s %u %s", m->name, &m->total, m->name2); 
+    
+    fgets (buff, sizeof(buff), fd); //从fd文件中读取长度为buff的字符串再存到起始地址为buff这个空间里 
+    sscanf (buff, "%s %u", m->name2, &m->free, m->name2); 
+    printf("tatol:%d free:%d\n",m->total,m->free);
+    fclose(fd);     //关闭文件fd
+}
+
+int cal_cpuoccupy (CPU_OCCUPY *o, CPU_OCCUPY *n) 
+{   
+    unsigned long od, nd;    
+    unsigned long id, sd;
+    int cpu_use = 0;   
+    
+    od = (unsigned long) (o->user + o->nice + o->system +o->idle);//第一次(用户+优先级+系统+空闲)的时间再赋给od
+    nd = (unsigned long) (n->user + n->nice + n->system +n->idle);//第二次(用户+优先级+系统+空闲)的时间再赋给od
+      
+    id = (unsigned long) (n->user - o->user);    //用户第一次和第二次的时间之差再赋给id
+    sd = (unsigned long) (n->system - o->system);//系统第一次和第二次的时间之差再赋给sd
+    if((nd-od) != 0)
+    cpu_use = (int)((sd+id)*10000)/(nd-od); //((用户+系统)乖100)除(第一次和第二次的时间差)再赋给g_cpu_used
+    else cpu_use = 0;
+    //printf("cpu: %u\n",cpu_use);
+    return cpu_use;
+}
+
+void get_cpuoccupy (CPU_OCCUPY *cpust) //对无类型get函数含有一个形参结构体类弄的指针O
+{   
+    FILE *fd;         
+    int n;            
+    char buff[256]; 
+    CPU_OCCUPY *cpu_occupy;
+    cpu_occupy=cpust;
+                                                                                                               
+    fd = fopen ("/proc/stat", "r"); 
+    fgets (buff, sizeof(buff), fd);
+    
+    sscanf (buff, "%s %u %u %u %u", cpu_occupy->name, &cpu_occupy->user, &cpu_occupy->nice,&cpu_occupy->system, &cpu_occupy->idle);
+    
+    fclose(fd);     
+}
+
+void  get_cpu_ram_state(int *ram_used,int *cpu_used)
+{
+    CPU_OCCUPY cpu_stat1;
+    CPU_OCCUPY cpu_stat2;
+    MEM_OCCUPY mem_stat;
+ 
+    
+    //获取内存
+    get_memoccupy ((MEM_OCCUPY *)&mem_stat);
+    
+    //第一次获取cpu使用情况
+    get_cpuoccupy((CPU_OCCUPY *)&cpu_stat1);
+    sleep(2);
+    
+    //第二次获取cpu使用情况
+    get_cpuoccupy((CPU_OCCUPY *)&cpu_stat2);
+    
+    //计算cpu使用率
+    *cpu_used = cal_cpuoccupy ((CPU_OCCUPY *)&cpu_stat1, (CPU_OCCUPY *)&cpu_stat2);
+
+     *ram_used=(mem_stat.total-mem_stat.free)*100/mem_stat.total;
+
+} 
 
 
 

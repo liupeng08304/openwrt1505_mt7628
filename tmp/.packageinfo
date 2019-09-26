@@ -27027,8 +27027,8 @@ Description: mkelfimage
 @@
 
 
-Source-Makefile: package/utils/mtk-mt76x8-oled/Makefile
-Package: mtk-mt76x8-oled
+Source-Makefile: package/utils/mt7628_oled/Makefile
+Package: mt7628_oled
 Version: 1
 Depends: +libc +SSP_SUPPORT:libssp +USE_GLIBC:librt +USE_GLIBC:libpthread +libpthread +librt +libstdcpp +kmod-i2c-core +kmod-i2c-ralink
 Conflicts: 
@@ -27036,7 +27036,7 @@ Menu-Depends:
 Provides: 
 Section: utils
 Category: Utilities
-Title: mtk-mt76x8-oled
+Title: mt7628_oled
 Maintainer: 
 Source: 
 Type: ipkg

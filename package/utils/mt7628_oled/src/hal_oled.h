@@ -65,6 +65,8 @@ extern void HalOledFill(uint8 x1,uint8 y1,uint8 x2,uint8 y2,uint8 dot);
 extern void HalOledShowChar(uint8 x,uint8 y,uint8 chr,uint8 size,uint8 mode);
 extern void HalOledShowNum(uint8 x,uint8 y,uint32 num,uint8 len,uint8 size);
 extern void HalOledShowString(uint8 x,uint8 y,const uint8 *p,uint8 size);
+void  get_cpu_ram_state(int *ram_used,int *cpu_used);
+void Show_icon(uint16 startx,uint16 starty,uint16 xszie,uint16 ysize,uint8* icon);
 /**************************************************************************************************
 **************************************************************************************************/
 
